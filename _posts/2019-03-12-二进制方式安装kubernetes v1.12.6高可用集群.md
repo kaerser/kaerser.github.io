@@ -10,8 +10,7 @@ tags:
     - kubernetes
 ---
 
-
-####  一、集群节点规划
+#### 一、集群节点规划
 
 ```shell
 master01/etcd01:        10.199.139.101
@@ -20,6 +19,7 @@ master03/etcd03:        10.199.139.103
 node01:                 10.199.139.104
 node02:                 10.199.139.105
 ```
+
 ***master服务映射关系：***
 
 ```shell
@@ -34,8 +34,8 @@ node02:                 10.199.139.105
      10.199.139.103:8080
 ```
 
-
 #### 二、hosts文件配置，互信配置
+
 ```
 10.199.139.101         hz-k8s-master-199-139-101
 10.199.139.102         hz-k8s-master-199-139-102
@@ -45,6 +45,7 @@ node02:                 10.199.139.105
 ```
 
 #### 三、版本
+
 ```shell
 master:  v1.12.6   https://dl.k8s.io/v1.12.6/kubernetes-server-linux-amd64.tar.gz
 node:    v1.12.6   https://dl.k8s.io/v1.12.6/kubernetes-node-linux-amd64.tar.gz
@@ -55,15 +56,19 @@ cfssljson          https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64
 cfssl-certinfo     https://pkg.cfssl.org/R1.2/cfssl-certinfo_linux-amd64
 ```
 
-
 #### 四、配置安装docker
+
 ```shell
 yum-config-manager  --add-repo  https://download.docker.com/linux/centos/docker-ce.repo
 yum list docker-ce --showduplicates | sort -r
 yum install -y docker-ce-18.06.1.ce-3.el7
+systemctl enable docker.service
+systemctl start docker.service
+systemctl status docker.service
 ```
 
 #### 五、创建所需目录以及ca证书和密钥
+
 ```shell
 for i in {101..103}
 do
@@ -191,6 +196,7 @@ done
 ```
 
 #### 六、定义全局环境变量：
+
 ```shell
 # TLS Bootstrapping 使用的Token，可以使用命令 head -c 16 /dev/urandom | od -An -t x | tr -d ' ' 生成
 export BOOTSTRAP_TOKEN="8981b594122ebed7596f1d3b69c78223"
@@ -214,14 +220,18 @@ export CLUSTER_DNS_DOMAIN="cluster.local."
 # MASTER API Server 地址
 export MASTER_URL="10.199.136.220"
 ```
+
 #### 七、部署etcd集群
+
 ```shell
 etcd集群信息：
 etcd01:   10.199.139.101
 etcd02:   10.199.139.102
 etcd03:   10.199.139.103
 ```
+
 ##### 1.定义环境变量：
+
 ```shell
 # 当前部署的机器名称(随便定义，只要能区分不同机器即可)
 export NODE_NAME=master01
@@ -239,6 +249,7 @@ source /usr/local/k8s/bin/env/env.sh
 ```
 
 ##### 2.分发etcd文件：
+
 ```shell
 for i in {101..103}
 do
@@ -289,6 +300,7 @@ scp etcd.pem etcd-key.pem 10.199.139.101:/etc/etcd/ssl/
 ```
 
 ##### 4.创建etcd systemd unit文件：
+
 ```shell
 cat > etcd.service <<EOF
 [Unit]
@@ -325,9 +337,11 @@ LimitNOFILE=65536
 WantedBy=multi-user.target
  EOF
 ```
+
 *分发etcd.service文件*
 
 ##### 5.启动etcd集群：
+
 ```shell
 systemctl daemon-reload
 systemctl enable etcd
@@ -336,6 +350,7 @@ systemctl status etcd
 ```
 
 ##### 6.验证etcd集群服务状态：
+
 ```shell
 for ip in ${NODE_IPS}; do
   ETCDCTL_API=3 /usr/local/k8s/bin/etcdctl \
@@ -353,8 +368,11 @@ https://10.199.139.101:2379 is healthy: successfully committed proposal: took = 
 https://10.199.139.102:2379 is healthy: successfully committed proposal: took = 1.716494ms
 https://10.199.139.103:2379 is healthy: successfully committed proposal: took = 1.770061ms
 ```
+
 #### 八、部署flanneld网络
+
 ##### 1.创建flannled证书签名请求：
+
 ```shell
 cat > flanneld-csr.json <<EOF
 {
@@ -396,6 +414,7 @@ done
 ```
 
 ##### 2.向etcd集群中写入pod网络信息
+
 ```shell
 etcdctl \
   --endpoints=${ETCD_ENDPOINTS} \
@@ -412,6 +431,7 @@ etcdctl \
 ```
 
 ##### 3.安装配置flanneld
+
 *分发flanneld文件至指定主机：*
 
 ```shell
@@ -422,6 +442,7 @@ done
 ```
 
 ##### 4.创建flanneld的systemd unit文件：
+
 ```shell
 cat > /etc/systemd/system/flanneld.service << EOF
 [Unit]
@@ -448,7 +469,9 @@ WantedBy=multi-user.target
 RequiredBy=docker.service
 EOF
 ```
-#####  5.启动flanneld服务：
+
+##### 5.启动flanneld服务：
+
 ```shell
 systemctl daemon-reload
 systemctl enable flanneld
@@ -457,6 +480,7 @@ systemctl status flanneld
 ```
 
 ##### 6.检查分配给flanneld的pod网段信息：
+
 *查看集群pod网段*
 
 ```shell
@@ -484,6 +508,7 @@ etcdctl \
 /kubernetes/network/subnets/172.30.97.0-24
 /kubernetes/network/subnets/172.30.71.0-24
 ```
+
 *查看某一 Pod 网段对应的 flanneld 进程监听的 IP 和网络参数*
 
 ```shell
@@ -494,6 +519,7 @@ etcdctl \
   --key-file=/etc/flanneld/ssl/flanneld-key.pem \
   get ${FLANNEL_ETCD_PREFIX}/subnets/172.30.32.0-24
 ```
+
 ```shell
 {"PublicIP":"10.199.139.101","BackendType":"vxlan","BackendData":{"VtepMAC":"8a:0d:69:63:81:48"}}
 ```
@@ -501,6 +527,7 @@ etcdctl \
 #### 九、部署master节点
 
 ##### 1.分发master二进制文件：
+
 ```
 for i in {101..103}
 do
@@ -509,6 +536,7 @@ done
 ```
 
 ##### 2.创建master证书签名请求：
+
 ```shell
 cat > /root/k8s-v1.12.6/cfssl/server/master01/kubernetes-csr.json <<EOF
 {
@@ -540,6 +568,7 @@ cat > /root/k8s-v1.12.6/cfssl/server/master01/kubernetes-csr.json <<EOF
 }
 EOF
 ```
+
 *生成master证书和私钥：*
 
 ```shell
@@ -558,6 +587,7 @@ scp /root/k8s-v1.12.6/cfssl/server/master03/{kubernetes-key.pem,kubernetes.pem} 
 ```
 
 ##### 3.配置和启动kube-apiserver
+
 *创建kube-apiserver使用的客户端token文件*
 
 ```shell
@@ -625,6 +655,7 @@ LimitNOFILE=65536
 WantedBy=multi-user.target
 EOF
 ```
+
 *创建审计日志策略文件：*
 
 ```shell
@@ -719,6 +750,7 @@ systemctl status kube-apiserver
 ```
 
 ##### 4.配置和启动kube-controller-manager
+
 *创建kube-controller-manager的systemd unit文件*
 
 ```shell
@@ -748,6 +780,7 @@ RestartSec=5
 WantedBy=multi-user.target
 EOF
 ```
+
 *启动kube-controller-manager*
 
 ```shell
@@ -758,6 +791,7 @@ systemctl status kube-controller-manager
 ```
 
 ##### 配置和启动kube-scheduler
+
 *创建kube-scheduler的systemd unit文件*
 
 ```shell
@@ -779,6 +813,7 @@ RestartSec=5
 WantedBy=multi-user.target
 EOF
 ```
+
 *启动kube-scheduler*
 
 ```shell
@@ -804,7 +839,7 @@ scp /root/k8s-v1.12.6/client/kubernetes/client/bin/kubectl 10.199.139.101:/usr/l
 
 **创建admin证书**
 
->kubectl与kube-apiserver的安全端口通信，需要为安全通信提供TLS证书和密钥。创建admin证书签名请求：
+> kubectl与kube-apiserver的安全端口通信，需要为安全通信提供TLS证书和密钥。创建admin证书签名请求：
 
 ```shell
 cat > /root/k8s-v1.12.6/cfssl/client/admin/admin-csr.json <<EOF
@@ -827,6 +862,7 @@ cat > /root/k8s-v1.12.6/cfssl/client/admin/admin-csr.json <<EOF
 }
 EOF
 ```
+
 **生成admin证书和密钥：**
 
 ```shell
@@ -866,6 +902,7 @@ kubectl config set-context kubernetes \
 # 设置默认上下文
 kubectl config use-context kubernetes
 ```
+
 **验证master节点**
 
 ```shell
@@ -882,6 +919,7 @@ kubectl get endpoints kube-controller-manager --namespace=kube-system  -o yaml
 #### 十一、部署node节点
 
 ##### 1.创建所需目录及分发证书文件
+
 ```shell
 for i in {104..105}
 do
@@ -894,7 +932,9 @@ scp /etc/kubernetes/ssl/ca.pem 10.199.139.$i:/etc/kubernetes/ssl/
 scp /root/k8s-v1.12.6/flannel-v0.11.0/{flanneld,mk-docker-opts.sh} 10.199.139.$i:/usr/local/k8s/bin/
 done
 ```
+
 ##### 2.node节点安装flanneld
+
 *此处参照上面的步骤*
 
 ##### 3.开启路由转发
@@ -906,15 +946,18 @@ net.bridge.bridge-nf-call-ip6tables=1
 ```
 
 ##### 4.修改docker.service文件配置
+
 ```shell
 systmectl cat docker
 ```
+
 ```shell
 EnvironmentFile=-/run/flannel/docker
 ExecStart=/usr/bin/dockerd --log-level=info $DOCKER_NETWORK_OPTIONS
 ```
 
 ##### 5.安装和配置kubelet
+
 > **kubelet启动时向kube-apiserver发送TLS bootstrapping请求，需要先将bootstrap token文件中的kubelet-bootstrap用户赋予system:node-bootstrapper角色，然后kubelet才有权限创建认证请求(certificatesigningrequests)：**
 
 ```shell
@@ -959,6 +1002,7 @@ kubectl config set-context default \
 # 设置默认上下文
 kubectl config use-context default --kubeconfig=bootstrap.kubeconfig
 ```
+
 ```shell
 mv bootstrap.kubeconfig /etc/kubernetes/
 ```
@@ -973,6 +1017,7 @@ done
 ```
 
 ##### 6.创建kubelet的systemd unit文件
+
 ```shell
 cat > kubelet.service <<EOF
 [Unit]
@@ -1005,6 +1050,7 @@ RestartSec=5
 WantedBy=multi-user.target
 EOF
 ```
+
 *分发kubelet服务文件*
 
 ```shell
@@ -1018,21 +1064,25 @@ systemctl enable kubelet
 systemctl start kubelet
 systemctl status kubelet
 ```
+
 *查看csr信息*
 
 ```shell
 kubectl get csr
 ```
+
 ```shell
 NAME                                                   AGE     REQUESTOR           CONDITION
 node-csr-YCHXi4rRM-n1MzhnW6OUr-My5zdQSfbaJkVhv2BjEzU   2m56s   kubelet-bootstrap   Pending
 node-csr-wE9C2rH3IktEu735ELr--Q42RLXA1-KqkBuFW3s9JFI   3m30s   kubelet-bootstrap   Pending
 ```
+
 *查看csr详细信息*
 
 ```shell
 kubectl describe csr node-csr-YCHXi4rRM-n1MzhnW6OUr-My5zdQSfbaJkVhv2BjEzU
 ```
+
 ```shell
 Name:               node-csr-YCHXi4rRM-n1MzhnW6OUr-My5zdQSfbaJkVhv2BjEzU
 Labels:             <none>
@@ -1046,6 +1096,7 @@ Subject:
          Organization:   system:nodes
 Events:  <none>
 ```
+
 *通过csr请求：*
 
 ```shell
@@ -1053,6 +1104,7 @@ kubectl certificate approve node-csr-YCHXi4rRM-n1MzhnW6OUr-My5zdQSfbaJkVhv2BjEzU
 ```
 
 ##### 7.配置kube-proxy
+
 *创建kube-proxy证书签名请求*
 
 ```shell
@@ -1076,6 +1128,7 @@ cat > kube-proxy-csr.json <<EOF
 }
 EOF
 ```
+
 *生成kube-proxy客户端证书和私钥*
 
 ```shell
@@ -1117,6 +1170,7 @@ kubectl config set-context default \
 # 设置默认上下文
 kubectl config use-context default --kubeconfig=kube-proxy.kubeconfig
 ```
+
 *分发kube-proxy kubeconfig文件*
 
 ```shell
