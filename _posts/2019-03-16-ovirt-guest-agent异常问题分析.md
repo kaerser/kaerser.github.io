@@ -28,9 +28,10 @@ tags:
 
 **问题分析：**
 
-1. CentOS默认yum源指定的base源和update源在CentOS7.6发布之后，默认指向了CentOS7.6的源，而通过查找CentOS7.6的镜像中libvirt的版本已经升级至4.5.0，在安装ovirt node节点时默认将libvirt版本升级至4.5.0，这时导致出现以上问题的根本原因；
+1. CentOS默认yum源指定的base源和update源在CentOS7.6发布之后，默认指向了CentOS7.6的源，而通过查找CentOS7.6的镜像中libvirt的版本已经升级至4.5.0，在安装ovirt node节点时默认将libvirt版本升级至4.5.0，这是导致出现以上问题的根本原因；
 2. 解决以上问题需要修改base源和update固定写至CentOS7.5，分别为：[base](http://vault.centos.org/centos/7.5.1804/os/x86_64/)，[update](http://vault.centos.org/centos/7.5.1804/updates/x86_64/)
 
 **题外话：**
+
 *造成libvirt 4.X版本出现问题的原因目前还未找到官方的解释，有关这方面的问题信息，大家可以在评论里联系我，谢谢...*
 
