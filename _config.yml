@@ -100,16 +100,16 @@ service-worker: true
 # Friends
 friends: [
     {
-        title: "WY",
-        href: "http://zhengwuyang.com"
+        title: "Kubernetes",
+        href: "https://kubernetes.io/"
     },{
-        title: "简书·BY",
-        href: "http://www.jianshu.com/u/e71990ada2fd"
+        title: "CoreOS",
+        href: "https://coreos.com/"
     },{
-        title: "Apple",
-        href: "https://apple.com"
+        title: "oVirt",
+        href: "https://ovirt.org/"
     },{
-        title: "Apple Developer",
-        href: "https://developer.apple.com/"
+        title: "RedHat",
+        href: "https://www.redhat.com/en"
     }
 ]
