@@ -4,7 +4,7 @@ title:      二进制方式安装kubernetes v1.12.6高可用集群
 subtitle:   
 date:       2019-03-12
 author:     Kaerser
-header-img: img/sea-wave.jpg
+header-img: img/sfo.jpg
 catalog: true
 tags:
     - kubernetes
