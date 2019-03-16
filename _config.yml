@@ -1,8 +1,8 @@
 # Site settings
 title: Kaerser Blog
 SEOTitle: Kaerser的博客 | Kaerser Blog
-header-img: img/post-bg-desk.jpg
-# header-img: img/hero.jpg
+# header-img: img/post-bg-desk.jpg
+header-img: img/hero.jpg
 email: kaermessi@gmail.com
 description: "I'm thinking..."
 # keyword: "BY, BY Blog, 柏荧的博客, qiubaiying, 邱柏荧, iOS, Apple, iPhone"
