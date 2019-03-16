@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      2019-03-16-ovirt-guest-agent异常问题分析
+title:      ovirt-guest-agent异常问题分析
 subtitle:   
 date:       2019-03-16
 author:     Kaerser
