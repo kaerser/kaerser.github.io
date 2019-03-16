@@ -1,11 +1,11 @@
 # Site settings
-title: Kaerser Blog
-SEOTitle: Kaerser的博客 | Kaerser Blog
+title: K Blog
+SEOTitle: Kaerser的博客 | K Blog
 # header-img: img/post-bg-desk.jpg
 header-img: img/hero.jpg
 email: kaermessi@gmail.com
 description: "I'm thinking..."
-# keyword: "BY, BY Blog, 柏荧的博客, qiubaiying, 邱柏荧, iOS, Apple, iPhone"
+keyword: "Kaerser, Iaas, 虚拟化, Paas, Kubernetes"
 url: "https://kaerser.github.io"          # your host, for absolute URL
 baseurl: ""      # for example, '/blog' if your blog hosted on 'host/blog'
 github_repo: "https://github.com/qiubaiying/qiubaiying.github.io.git" # you code repository
