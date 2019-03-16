@@ -8,7 +8,7 @@ description: "I'm thinking..."
 keyword: "Kaerser, Iaas, 虚拟化, Paas, Kubernetes"
 url: "https://kaerser.github.io"          # your host, for absolute URL
 baseurl: ""      # for example, '/blog' if your blog hosted on 'host/blog'
-github_repo: "https://github.com/qiubaiying/qiubaiying.github.io.git" # you code repository
+github_repo: "https://github.com/kaerser/kaerser.github.io.git" # you code repository
 
 # Sidebar settings
 sidebar: false                           # whether or not using Sidebar.
@@ -111,5 +111,8 @@ friends: [
     },{
         title: "RedHat",
         href: "https://www.redhat.com/en"
+    },{
+        title: "Ansible",
+        href: "https://www.ansible.com/"
     }
 ]
