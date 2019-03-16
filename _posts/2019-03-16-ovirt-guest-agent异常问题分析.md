@@ -5,7 +5,7 @@ subtitle:
 date:       2019-03-16
 author:     Kaerser
 header-img: img/bg-01.jpg
-catalog: true
+catalog: false
 tags:
     - ovirt
 ---
