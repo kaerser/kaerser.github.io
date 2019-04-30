@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      nginx ingress配置会话保持
+title:      nginx-ingress配置会话保持
 subtitle:   
 date:       2019-04-30
 author:     Kaerser
