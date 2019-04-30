@@ -11,6 +11,7 @@ tags:
 	- ingress
 ---
 
+
 使用nginx-ingress-controller镜像：quay.io/kubernetes-ingress-controller/nginx-ingress-controller:0.24.1
 
 ``` yaml
