@@ -7,8 +7,7 @@ author:     Kaerser
 header-img: img/bg-04.jpg
 catalog: false
 tags:
-    - kubernetes
-	- ingress
+    - ingress
 ---
 
 
