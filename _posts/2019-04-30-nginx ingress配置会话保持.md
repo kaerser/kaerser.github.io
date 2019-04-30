@@ -82,7 +82,7 @@ Events:
 
 
 测试结果：
-![2527888564e71cdfa8c9d7d26fac5371.png](en-resource://database/1943:0)
+![img/screenshot/2019-04-30-nginx-ingress配置会话保持-01.png](en-resource://database/1943:0)
 
 
 结果显示，配置会话保持的请求一直请求至同一pods服务，未配置会话保持的请求会使用轮询的方式至后端pods服务
